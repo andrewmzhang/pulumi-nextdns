@@ -6,7 +6,7 @@ package nextdns
 import (
 	"fmt"
 
-	"github.com/andrewmzhang/nextdns/sdk/go/nextdns/internal"
+	"github.com/andrewmzhang/pulumi-nextdns/sdk/go/nextdns/internal"
 	"github.com/blang/semver"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
