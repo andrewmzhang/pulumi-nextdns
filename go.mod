@@ -1,4 +1,4 @@
-module pulumi-nextdns
+module github.com/andrewmzhang/pulumi-nextdns
 
 go 1.24
 
