@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/andrewmzhang/pulumi-nextdns/nextdns/nextdns"
+	"github.com/andrewmzhang/pulumi-nextdns/nextdns"
 )
 
 // Version is initialized by the Go linker to contain the semver of this build.

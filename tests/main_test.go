@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/andrewmzhang/pulumi-nextdns/nextdns/nextdns"
+	"github.com/andrewmzhang/pulumi-nextdns/nextdns"
 	"github.com/blang/semver"
 	"github.com/pulumi/pulumi-go-provider/integration"
 	"github.com/stretchr/testify/require"
