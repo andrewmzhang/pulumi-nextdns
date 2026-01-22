@@ -1,0 +1,1 @@
+NextDNS provider for Pulumi

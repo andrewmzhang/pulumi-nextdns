@@ -4,16 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
+
 	"github.com/amalucelli/nextdns-go/nextdns"
 	"github.com/pulumi/pulumi-go-provider/infer"
-	"os"
 )
-
 
 // NextDNSRewrite TODO: Call the master object NextDNSProfileRewrite
 // NextDNSRewrite Resource Controlling struct
-type NextDNSRewrite struct {
-}
+type NextDNSRewrite struct{}
 
 // NextDNSRewriteArgs Resource input struct
 type NextDNSRewriteArgs struct {
