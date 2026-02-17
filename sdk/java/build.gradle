@@ -17,7 +17,8 @@ def resolvedVersion = System.getenv("PACKAGE_VERSION") ?:
 
 def signingKey = System.getenv("SIGNING_KEY")
 def signingPassword = System.getenv("SIGNING_PASSWORD")
-def publishRepoURL = System.getenv("PUBLISH_REPO_URL") ?: "https://s01.oss.sonatype.org"
+def publishRepoURL = System.getenv("PUBLISH_REPO_URL") ?: "https://central.sonatype.com/repository/maven-snapshots/"
+def publishStagingURL = System.getenv("PUBLISH_STAGING_URL") ?: "https://ossrh-staging-api.central.sonatype.com/service/local/"
 def publishRepoUsername = System.getenv("PUBLISH_REPO_USERNAME")
 def publishRepoPassword = System.getenv("PUBLISH_REPO_PASSWORD")
 
@@ -68,7 +69,7 @@ def genPulumiResources = tasks.register('genPulumiResources') {
         def builder = new groovy.json.JsonBuilder()
         builder {
             resource true
-            name "nextdns"
+            name "pulumi-nextdns"
             version resolvedVersion
         }
         def infoJson = builder.toPrettyString()
@@ -84,7 +85,7 @@ publishing {
     publications {
         mainPublication(MavenPublication) {
             groupId = "com.andrewmzhang."
-            artifactId = "nextdns"
+            artifactId = "pulumi-nextdns"
             version = resolvedVersion
             from components.java
             artifact sourcesJar
@@ -94,7 +95,7 @@ publishing {
                 inceptionYear = ""
                 name = ""
                 packaging = "jar"
-                description = " "
+                description = "NextDNS provider for Pulumi"
 
                 url = "https://example.com"
 
@@ -138,8 +139,8 @@ if (publishRepoUsername) {
     nexusPublishing {
         repositories {
             sonatype {
-                nexusUrl.set(uri(publishRepoURL + "/service/local/"))
-                snapshotRepositoryUrl.set(uri(publishRepoURL + "/content/repositories/snapshots/"))
+                nexusUrl.set(uri(publishStagingURL))
+                snapshotRepositoryUrl.set(uri(publishRepoURL))
                 username = publishRepoUsername
                 password = publishRepoPassword
             }

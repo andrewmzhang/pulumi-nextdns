@@ -5,11 +5,6 @@ import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "./utilities";
 
 // Export members:
-export { NextDNSRewriteArgs } from "./nextDNSRewrite";
-export type NextDNSRewrite = import("./nextDNSRewrite").NextDNSRewrite;
-export const NextDNSRewrite: typeof import("./nextDNSRewrite").NextDNSRewrite = null as any;
-utilities.lazyLoad(exports, ["NextDNSRewrite"], () => require("./nextDNSRewrite"));
-
 export { ProviderArgs } from "./provider";
 export type Provider = import("./provider").Provider;
 export const Provider: typeof import("./provider").Provider = null as any;
@@ -18,27 +13,16 @@ utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 
 // Export sub-modules:
 import * as config from "./config";
+import * as nextdns from "./nextdns";
 
 export {
     config,
+    nextdns,
 };
-
-const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "nextdns:index:NextDNSRewrite":
-                return new NextDNSRewrite(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
-};
-pulumi.runtime.registerResourceModule("nextdns", "index", _module)
-pulumi.runtime.registerResourcePackage("nextdns", {
+pulumi.runtime.registerResourcePackage("pulumi-nextdns", {
     version: utilities.getVersion(),
     constructProvider: (name: string, type: string, urn: string): pulumi.ProviderResource => {
-        if (type !== "pulumi:providers:nextdns") {
+        if (type !== "pulumi:providers:pulumi-nextdns") {
             throw new Error(`unknown provider type ${type}`);
         }
         return new Provider(name, <any>undefined, { urn });

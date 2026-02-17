@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Immutable;
 
-namespace Andrewmzhang.Nextdns
+namespace Andrewmzhang.PulumiNextdns
 {
     public static class Config
     {
@@ -30,7 +30,7 @@ namespace Andrewmzhang.Nextdns
             }
         }
 
-        private static readonly global::Pulumi.Config __config = new global::Pulumi.Config("nextdns");
+        private static readonly global::Pulumi.Config __config = new global::Pulumi.Config("pulumi-nextdns");
 
         private static readonly __Value<string?> _apiKey = new __Value<string?>(() => __config.Get("apiKey"));
         public static string? ApiKey

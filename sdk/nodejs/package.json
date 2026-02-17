@@ -1,5 +1,5 @@
 {
-    "name": "@andrewmzhang/nextdns",
+    "name": "@andrewmzhang/pulumi-nextdns",
     "version": "0.1.0",
     "scripts": {
         "build": "tsc"
@@ -13,7 +13,7 @@
     },
     "pulumi": {
         "resource": true,
-        "name": "nextdns",
+        "name": "pulumi-nextdns",
         "version": "0.1.0"
     }
 }

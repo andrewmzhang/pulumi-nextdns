@@ -10,5 +10,5 @@ pluginManagement {
   }
 }
 
-rootProject.name = "com.andrewmzhang.nextdns"
+rootProject.name = "com.andrewmzhang.pulumi-nextdns"
 include("lib")

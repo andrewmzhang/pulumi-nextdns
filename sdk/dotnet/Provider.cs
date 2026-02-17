@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Pulumi.Serialization;
 using Pulumi;
 
-namespace Andrewmzhang.Nextdns
+namespace Andrewmzhang.PulumiNextdns
 {
-    [NextdnsResourceType("pulumi:providers:nextdns")]
+    [PulumiNextdnsResourceType("pulumi:providers:pulumi-nextdns")]
     public partial class Provider : global::Pulumi.ProviderResource
     {
         [Output("apiKey")]
@@ -25,7 +25,7 @@ namespace Andrewmzhang.Nextdns
         /// <param name="args">The arguments used to populate this resource's properties</param>
         /// <param name="options">A bag of options that control this resource's behavior</param>
         public Provider(string name, ProviderArgs args, CustomResourceOptions? options = null)
-            : base("nextdns", name, args ?? new ProviderArgs(), MakeResourceOptions(options, ""))
+            : base("pulumi-nextdns", name, args ?? new ProviderArgs(), MakeResourceOptions(options, ""))
         {
         }
 
@@ -34,6 +34,10 @@ namespace Andrewmzhang.Nextdns
             var defaultOptions = new CustomResourceOptions
             {
                 Version = Utilities.Version,
+                AdditionalSecretOutputs =
+                {
+                    "apiKey",
+                },
             };
             var merged = CustomResourceOptions.Merge(defaultOptions, options);
             // Override the ID if one was specified for consistency with other language SDKs.
@@ -45,7 +49,16 @@ namespace Andrewmzhang.Nextdns
     public sealed class ProviderArgs : global::Pulumi.ResourceArgs
     {
         [Input("apiKey", required: true)]
-        public Input<string> ApiKey { get; set; } = null!;
+        private Input<string>? _apiKey;
+        public Input<string>? ApiKey
+        {
+            get => _apiKey;
+            set
+            {
+                var emptySecret = Output.CreateSecret(0);
+                _apiKey = Output.Tuple<Input<string>?, int>(value, emptySecret).Apply(t => t.Item1);
+            }
+        }
 
         public ProviderArgs()
         {
