@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/andrewmzhang/nextdns-go/models"
-	"github.com/andrewmzhang/pulumi-nextdns/nextdns"
 	"github.com/blang/semver"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/integration"
@@ -40,11 +39,11 @@ func TestNextDNSRewrite(t *testing.T) {
 		}).AnyTimes()
 
 	// Create the provider such that it uses the mock client.
-	newMockClient := func(ctx context.Context, config nextdns.Config) (nextdns.Client, error) {
+	newMockClient := func(ctx context.Context, config Config) (Client, error) {
 		assert.Equal(t, "nextdns-api-key-mock", config.ApiKey)
 		return mockClient, nil
 	}
-	provider, err := nextdns.Provider(newMockClient)
+	provider, err := Provider(newMockClient)
 	require.NoError(t, err)
 
 	server, err := integration.NewServer(t.Context(),

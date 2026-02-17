@@ -20,7 +20,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
 		os.Exit(1)
 	}
-	err = provider.Run(context.Background(), "nextdns", "0.1.0")
+	err = provider.Run(context.Background(), "pulumi-nextdns", "0.1.0")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
 		os.Exit(1)

@@ -12,5 +12,5 @@ import (
 var _ = internal.GetEnvOrDefault
 
 func GetApiKey(ctx *pulumi.Context) string {
-	return config.Get(ctx, "nextdns:apiKey")
+	return config.Get(ctx, "pulumi-nextdns:apiKey")
 }

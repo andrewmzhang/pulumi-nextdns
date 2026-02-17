@@ -21,7 +21,7 @@ export class NextDNSRewrite extends pulumi.CustomResource {
     }
 
     /** @internal */
-    public static readonly __pulumiType = 'nextdns:nextdns:NextDNSRewrite';
+    public static readonly __pulumiType = 'pulumi-nextdns:nextdns:NextDNSRewrite';
 
     /**
      * Returns true if the given object is an instance of NextDNSRewrite.  This is designed to work even

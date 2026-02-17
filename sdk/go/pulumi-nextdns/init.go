@@ -20,7 +20,7 @@ func (p *pkg) Version() semver.Version {
 }
 
 func (p *pkg) ConstructProvider(ctx *pulumi.Context, name, typ, urn string) (pulumi.ProviderResource, error) {
-	if typ != "pulumi:providers:nextdns" {
+	if typ != "pulumi:providers:pulumi-nextdns" {
 		return nil, fmt.Errorf("unknown provider type: %s", typ)
 	}
 
@@ -35,7 +35,7 @@ func init() {
 		version = semver.Version{Major: 1}
 	}
 	pulumi.RegisterResourcePackage(
-		"nextdns",
+		"pulumi-nextdns",
 		&pkg{version},
 	)
 }

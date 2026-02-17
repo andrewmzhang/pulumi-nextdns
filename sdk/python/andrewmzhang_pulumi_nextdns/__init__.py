@@ -10,23 +10,23 @@ from .provider import *
 
 # Make subpackages available:
 if typing.TYPE_CHECKING:
-    import andrewmzhang_nextdns.config as __config
+    import andrewmzhang_pulumi_nextdns.config as __config
     config = __config
-    import andrewmzhang_nextdns.nextdns as __nextdns
+    import andrewmzhang_pulumi_nextdns.nextdns as __nextdns
     nextdns = __nextdns
 else:
-    config = _utilities.lazy_import('andrewmzhang_nextdns.config')
-    nextdns = _utilities.lazy_import('andrewmzhang_nextdns.nextdns')
+    config = _utilities.lazy_import('andrewmzhang_pulumi_nextdns.config')
+    nextdns = _utilities.lazy_import('andrewmzhang_pulumi_nextdns.nextdns')
 
 _utilities.register(
     resource_modules="""
 [
  {
-  "pkg": "nextdns",
+  "pkg": "pulumi-nextdns",
   "mod": "nextdns",
-  "fqn": "andrewmzhang_nextdns.nextdns",
+  "fqn": "andrewmzhang_pulumi_nextdns.nextdns",
   "classes": {
-   "nextdns:nextdns:NextDNSRewrite": "NextDNSRewrite"
+   "pulumi-nextdns:nextdns:NextDNSRewrite": "NextDNSRewrite"
   }
  }
 ]
@@ -34,9 +34,9 @@ _utilities.register(
     resource_packages="""
 [
  {
-  "pkg": "nextdns",
-  "token": "pulumi:providers:nextdns",
-  "fqn": "andrewmzhang_nextdns",
+  "pkg": "pulumi-nextdns",
+  "token": "pulumi:providers:pulumi-nextdns",
+  "fqn": "andrewmzhang_pulumi_nextdns",
   "class": "Provider"
  }
 ]

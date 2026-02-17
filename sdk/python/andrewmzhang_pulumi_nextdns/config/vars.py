@@ -16,7 +16,7 @@ from .. import _utilities
 
 import types
 
-__config__ = pulumi.Config('nextdns')
+__config__ = pulumi.Config('pulumi-nextdns')
 
 
 class _ExportableConfig(types.ModuleType):

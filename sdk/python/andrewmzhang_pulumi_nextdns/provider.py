@@ -35,7 +35,7 @@ class ProviderArgs:
         pulumi.set(self, "api_key", value)
 
 
-@pulumi.type_token("pulumi:providers:nextdns")
+@pulumi.type_token("pulumi:providers:pulumi-nextdns")
 class Provider(pulumi.ProviderResource):
     @overload
     def __init__(__self__,
@@ -44,7 +44,7 @@ class Provider(pulumi.ProviderResource):
                  api_key: Optional[pulumi.Input[_builtins.str]] = None,
                  __props__=None):
         """
-        Create a Nextdns resource with the given unique name, props, and options.
+        Create a Pulumi-nextdns resource with the given unique name, props, and options.
         :param str resource_name: The name of the resource.
         :param pulumi.ResourceOptions opts: Options for the resource.
         """
@@ -55,7 +55,7 @@ class Provider(pulumi.ProviderResource):
                  args: ProviderArgs,
                  opts: Optional[pulumi.ResourceOptions] = None):
         """
-        Create a Nextdns resource with the given unique name, props, and options.
+        Create a Pulumi-nextdns resource with the given unique name, props, and options.
         :param str resource_name: The name of the resource.
         :param ProviderArgs args: The arguments to use to populate this resource's properties.
         :param pulumi.ResourceOptions opts: Options for the resource.
@@ -87,7 +87,7 @@ class Provider(pulumi.ProviderResource):
         secret_opts = pulumi.ResourceOptions(additional_secret_outputs=["apiKey"])
         opts = pulumi.ResourceOptions.merge(opts, secret_opts)
         super(Provider, __self__).__init__(
-            'nextdns',
+            'pulumi-nextdns',
             resource_name,
             __props__,
             opts)

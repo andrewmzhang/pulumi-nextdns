@@ -19,10 +19,10 @@ export {
     config,
     nextdns,
 };
-pulumi.runtime.registerResourcePackage("nextdns", {
+pulumi.runtime.registerResourcePackage("pulumi-nextdns", {
     version: utilities.getVersion(),
     constructProvider: (name: string, type: string, urn: string): pulumi.ProviderResource => {
-        if (type !== "pulumi:providers:nextdns") {
+        if (type !== "pulumi:providers:pulumi-nextdns") {
             throw new Error(`unknown provider type ${type}`);
         }
         return new Provider(name, <any>undefined, { urn });

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Pulumi.Serialization;
 using Pulumi;
 
-namespace Andrewmzhang.Nextdns
+namespace Andrewmzhang.PulumiNextdns
 {
-    [NextdnsResourceType("pulumi:providers:nextdns")]
+    [PulumiNextdnsResourceType("pulumi:providers:pulumi-nextdns")]
     public partial class Provider : global::Pulumi.ProviderResource
     {
         [Output("apiKey")]
@@ -25,7 +25,7 @@ namespace Andrewmzhang.Nextdns
         /// <param name="args">The arguments used to populate this resource's properties</param>
         /// <param name="options">A bag of options that control this resource's behavior</param>
         public Provider(string name, ProviderArgs args, CustomResourceOptions? options = null)
-            : base("nextdns", name, args ?? new ProviderArgs(), MakeResourceOptions(options, ""))
+            : base("pulumi-nextdns", name, args ?? new ProviderArgs(), MakeResourceOptions(options, ""))
         {
         }
 

@@ -69,7 +69,7 @@ class NextDNSRewriteArgs:
         pulumi.set(self, "profile_id", value)
 
 
-@pulumi.type_token("nextdns:nextdns:NextDNSRewrite")
+@pulumi.type_token("pulumi-nextdns:nextdns:NextDNSRewrite")
 class NextDNSRewrite(pulumi.CustomResource):
     @overload
     def __init__(__self__,
@@ -135,7 +135,7 @@ class NextDNSRewrite(pulumi.CustomResource):
             __props__.__dict__["profile_id"] = profile_id
             __props__.__dict__["rewrite_id"] = None
         super(NextDNSRewrite, __self__).__init__(
-            'nextdns:nextdns:NextDNSRewrite',
+            'pulumi-nextdns:nextdns:NextDNSRewrite',
             resource_name,
             __props__,
             opts)

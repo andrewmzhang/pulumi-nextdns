@@ -1,5 +1,5 @@
 {
   "resource": true,
-  "name": "nextdns",
+  "name": "pulumi-nextdns",
   "version": "0.1.0"
 }

@@ -44,7 +44,7 @@ func NewNextDNSRewrite(ctx *pulumi.Context,
 	}
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource NextDNSRewrite
-	err := ctx.RegisterResource("nextdns:nextdns:NextDNSRewrite", name, args, &resource, opts...)
+	err := ctx.RegisterResource("pulumi-nextdns:nextdns:NextDNSRewrite", name, args, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func NewNextDNSRewrite(ctx *pulumi.Context,
 func GetNextDNSRewrite(ctx *pulumi.Context,
 	name string, id pulumi.IDInput, state *NextDNSRewriteState, opts ...pulumi.ResourceOption) (*NextDNSRewrite, error) {
 	var resource NextDNSRewrite
-	err := ctx.ReadResource("nextdns:nextdns:NextDNSRewrite", name, id, state, &resource, opts...)
+	err := ctx.ReadResource("pulumi-nextdns:nextdns:NextDNSRewrite", name, id, state, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
