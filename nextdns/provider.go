@@ -1,9 +1,9 @@
 package nextdns
 
 import (
-	"fmt"
+	"context"
 
-	"github.com/pulumi/pulumi-go-provider"
+	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
@@ -11,16 +11,18 @@ type Config struct {
 	ApiKey string `pulumi:"apiKey" provider:"secret"`
 }
 
-func Provider() provider.Provider {
-	p, err := infer.NewProviderBuilder().
+// ClientFactory is a function that creates a Client based on the provider config.
+type ClientFactory func(ctx context.Context, config Config) (Client, error)
+
+func Provider(clientFactory ClientFactory) (p.Provider, error) {
+
+	return infer.NewProviderBuilder().
 		WithDisplayName("pulumi-nextdns").
 		WithDescription("NextDNS provider for Pulumi").
-		WithResources(infer.Resource(&NextDNSRewrite{})).
+		WithResources(
+			infer.Resource(&NextDNSRewrite{getClient: clientFactory}),
+		).
 		WithConfig(infer.Config(&Config{})).
 		WithNamespace("andrewmzhang").
 		Build()
-	if err != nil {
-		panic(fmt.Errorf("unabled to build a provider: %w", err))
-	}
-	return p
 }

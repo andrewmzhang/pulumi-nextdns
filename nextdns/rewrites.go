@@ -2,17 +2,15 @@ package nextdns
 
 import (
 	"context"
-	"errors"
-	"fmt"
-	"os"
 
-	"github.com/amalucelli/nextdns-go/nextdns"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-// NextDNSRewrite TODO: Call the master object NextDNSProfileRewrite
-// NextDNSRewrite Resource Controlling struct
-type NextDNSRewrite struct{}
+// NextDNSRewrite is Rewrite Resource Controlling struct
+// Golang lacks function covariance, but ClientFactory produces Client which is implements RewriteClient
+type NextDNSRewrite struct {
+	getClient ClientFactory
+}
 
 // NextDNSRewriteArgs Resource input struct
 type NextDNSRewriteArgs struct {
@@ -44,70 +42,53 @@ func (f *NextDNSRewriteState) Annotate(a infer.Annotator) {
 }
 
 func (f *NextDNSRewrite) Create(ctx context.Context, req infer.CreateRequest[NextDNSRewriteArgs]) (resp infer.CreateResponse[NextDNSRewriteState], err error) {
-	// Get nextdns config and retrieve NextDNS API Key
+	// Get nextdns config
 	config := infer.GetConfig[Config](ctx)
-	apiKey := config.ApiKey
 
+	// Use the client factory to create a client based on the current config.
+	client, err := f.getClient(ctx, config)
+	if err != nil {
+		return infer.CreateResponse[NextDNSRewriteState]{}, err
+	}
+
+	// Do nothing on dry-run
 	if req.DryRun {
 		return infer.CreateResponse[NextDNSRewriteState]{ID: ""}, nil
 	}
 
-	// Not dry run, create the NextDNSRewrite
-	client, err := nextdns.New(nextdns.WithAPIKey(apiKey))
+	rewrite, err := client.CreateRewrite(req.Inputs.ProfileID, req.Inputs.Name, req.Inputs.Content)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
-		os.Exit(1)
-	}
-	_, err = client.Profiles.Get(ctx, &nextdns.GetProfileRequest{ProfileID: req.Inputs.ProfileID})
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
-		os.Exit(1)
-	}
-	createRewriteRequest := &nextdns.CreateRewritesRequest{
-		ProfileID: req.Inputs.ProfileID,
-		Rewrites: &nextdns.Rewrites{
-			Name:    req.Inputs.Name,
-			Content: req.Inputs.Content,
-		},
-	}
-
-	rewriteID, err := client.Rewrites.Create(ctx, createRewriteRequest)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
-		os.Exit(1)
+		return infer.CreateResponse[NextDNSRewriteState]{}, err
 	}
 
 	return infer.CreateResponse[NextDNSRewriteState]{
-		ID: rewriteID,
+		ID: rewrite.ID,
 		Output: NextDNSRewriteState{
-			RewriteID:          rewriteID,
+			RewriteID:          rewrite.ID,
 			NextDNSRewriteArgs: req.Inputs,
 		},
 	}, nil
 }
 
-func (*NextDNSRewrite) Delete(ctx context.Context, req infer.DeleteRequest[NextDNSRewriteState]) (infer.DeleteResponse, error) {
+func (f *NextDNSRewrite) Delete(ctx context.Context, req infer.DeleteRequest[NextDNSRewriteState]) (infer.DeleteResponse, error) {
 	// Get nextdns config
 	config := infer.GetConfig[Config](ctx)
-	apiKey := config.ApiKey
-	profileID := req.State.ProfileID
 
-	// Not dry run, create the NextDNSRewrite
-	client, err := nextdns.New(nextdns.WithAPIKey(apiKey))
+	// Use the client factory to create a client based on the current config.
+	client, err := f.getClient(ctx, config)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
-		os.Exit(1)
+		return infer.DeleteResponse{}, err
 	}
 
-	client.Rewrites.Delete(ctx, &nextdns.DeleteRewritesRequest{
-		ProfileID: profileID,
-		ID:        req.State.RewriteID,
-	})
+	err = client.DeleteRewrite(req.State.ProfileID, req.State.RewriteID)
+	if err != nil {
+		return infer.DeleteResponse{}, err
+	}
 
 	return infer.DeleteResponse{}, nil
 }
 
-func (*NextDNSRewrite) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[NextDNSRewriteArgs], error) {
+func (n *NextDNSRewrite) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[NextDNSRewriteArgs], error) {
 	args, f, err := infer.DefaultCheck[NextDNSRewriteArgs](ctx, req.NewInputs)
 	if err != nil {
 		return infer.CheckResponse[NextDNSRewriteArgs]{
@@ -118,72 +99,50 @@ func (*NextDNSRewrite) Check(ctx context.Context, req infer.CheckRequest) (infer
 
 	// Get nextdns config
 	config := infer.GetConfig[Config](ctx)
-	apiKey := config.ApiKey
-	client, err := nextdns.New(nextdns.WithAPIKey(apiKey))
+
+	// Use the client factory to create a client based on the current config.
+	client, err := n.getClient(ctx, config)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
-		os.Exit(1)
+		return infer.CheckResponse[NextDNSRewriteArgs]{}, err
 	}
-
-	profileID := args.ProfileID
-	if profileID != "" {
-		profile, err := client.Profiles.Get(ctx, &nextdns.GetProfileRequest{ProfileID: profileID})
-		if err != nil || profile == nil {
-			fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
-			return infer.CheckResponse[NextDNSRewriteArgs]{
-				Inputs:   args,
-				Failures: f,
-			}, err
-		}
+	// Check that profile exists
+	err = client.CheckRewrite(args.ProfileID)
+	if err != nil {
+		return infer.CheckResponse[NextDNSRewriteArgs]{}, err
 	}
-
 	return infer.CheckResponse[NextDNSRewriteArgs]{
 		Inputs:   args,
 		Failures: f,
 	}, err
 }
 
-func (*NextDNSRewrite) Read(ctx context.Context, req infer.ReadRequest[NextDNSRewriteArgs, NextDNSRewriteState]) (infer.ReadResponse[NextDNSRewriteArgs, NextDNSRewriteState], error) {
+func (n *NextDNSRewrite) Read(ctx context.Context, req infer.ReadRequest[NextDNSRewriteArgs, NextDNSRewriteState]) (infer.ReadResponse[NextDNSRewriteArgs, NextDNSRewriteState], error) {
 	// Get nextdns config
 	config := infer.GetConfig[Config](ctx)
-	apiKey := config.ApiKey
-	client, err := nextdns.New(nextdns.WithAPIKey(apiKey))
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
-		os.Exit(1)
-	}
-
-	rewrites, err := client.Rewrites.List(ctx, &nextdns.ListRewritesRequest{
-		ProfileID: req.Inputs.ProfileID,
-	})
+	// Use the client factory to create a client based on the current config.
+	client, err := n.getClient(ctx, config)
 	if err != nil {
 		return infer.ReadResponse[NextDNSRewriteArgs, NextDNSRewriteState]{}, err
 	}
 
-	var rewriteFound *nextdns.Rewrites = nil
-	for _, rewrite := range rewrites {
-		if rewrite.ID == req.ID {
-			rewriteFound = rewrite
-			break
-		}
-	}
-	if rewriteFound == nil {
-		return infer.ReadResponse[NextDNSRewriteArgs, NextDNSRewriteState]{}, errors.New("rewrite does not exist")
+	rewrite, err := client.GetRewrite(req.State.ProfileID, req.ID)
+	if err != nil {
+		return infer.ReadResponse[NextDNSRewriteArgs, NextDNSRewriteState]{}, err
 	}
 
 	return infer.ReadResponse[NextDNSRewriteArgs, NextDNSRewriteState]{
 		ID: req.ID,
 		Inputs: NextDNSRewriteArgs{
 			ProfileID: req.Inputs.ProfileID,
-			Name:      rewriteFound.Name,
-			Content:   rewriteFound.Content,
+			Name:      rewrite.Name,
+			Content:   rewrite.Content,
 		},
 		State: NextDNSRewriteState{
-			RewriteID: rewriteFound.ID,
+			RewriteID: rewrite.ID,
 			NextDNSRewriteArgs: NextDNSRewriteArgs{
 				ProfileID: req.Inputs.ProfileID,
-				Name:      rewriteFound.Name,
-				Content:   rewriteFound.Content,
+				Name:      rewrite.Name,
+				Content:   rewrite.Content,
 			},
 		},
 	}, nil
